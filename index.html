@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background: #f0f0f0;
+        }
+        .container {
+            width: 300px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: linear-gradient(45deg, #007BFF, #00C6FF);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .toggle {
+            margin-top: 10px;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="signupContainer">
+        <h2>Sign Up</h2>
+        <input type="email" id="signupEmail" placeholder="Enter Email (e.g., example@domain.com)" required>
+        <input type="password" id="signupPassword" placeholder="Enter 6-digit Password" required>
+        <button onclick="signup()">Sign Up</button>
+        <p class="toggle" onclick="showLogin()">Already have an account? Login here</p>
+    </div>
+
+    <div class="container" id="loginContainer" style="display: none;">
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Enter Email" required>
+        <input type="password" id="loginPassword" placeholder="Enter Password" required>
+        <button onclick="login()">Login</button>
+        <p class="toggle" onclick="showSignup()">Don't have an account? Sign up here</p>
+    </div>
+
+    <script>
+        function showLogin() {
+            document.getElementById('signupContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+        }
+
+        function showSignup() {
+            document.getElementById('signupContainer').style.display = 'block';
+            document.getElementById('loginContainer').style.display = 'none';
+        }
+
+        function signup() {
+            let email = document.getElementById('signupEmail').value.trim();
+            let password = document.getElementById('signupPassword').value.trim();
+            let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            if (!emailPattern.test(email)) {
+                alert('Please enter a valid email (example@domain.com).');
+                return;
+            }
+            if (password.length !== 6 || isNaN(password)) {
+                alert('Password must be exactly 6 numeric digits.');
+                return;
+            }
+
+            // پہلے سے محفوظ اکاؤنٹس کو لوڈ کریں
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // چیک کریں کہ ای میل پہلے سے موجود تو نہیں
+            let userExists = users.some(user => user.email === email);
+            if (userExists) {
+                alert('This account already exists! Please log in.');
+                return;
+            }
+
+            // نیا یوزر ڈیٹا اسٹور کریں
+            users.push({ email: email, password: password });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            alert('Sign up successful! Now you can login.');
+            showLogin();
+        }
+
+        function login() {
+            let loginEmail = document.getElementById('loginEmail').value.trim();
+            let loginPassword = document.getElementById('loginPassword').value.trim();
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // چیک کریں کہ یوزر موجود ہے یا نہیں
+            let validUser = users.find(user => user.email === loginEmail && user.password === loginPassword);
+            
+            if (validUser) {
+                alert('Login successful!');
+                window.location.href = 'index (2).html'; // یہاں اپنی مطلوبہ لنک دیں
+            } else {
+                alert('Invalid email or password!');
+            }
+        }
+    </script>
+</body>
+</html>
